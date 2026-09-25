@@ -20,6 +20,7 @@ Each critical route is checked against every gate. `A` = automated (CI),
 | Confession feed / list view | A+M | A+M | A | A | A | M |
 | Confession detail / single view | A+M | A+M | A | A | A | M |
 | Confession creation / submission form | A+M | A+M | A | A | A | M |
+| Confession composer (rich controls, preview, validation) | A+M | A+M | A | A | A | M |
 | `ShareButtons` component | A+M | A+M | A | A | A | M |
 | Profile view (own) | A+M | A+M | A | A | A | M |
 | Profile view (other user, if public) | A+M | A+M | A | A | A | M |
@@ -53,6 +54,9 @@ Gate definitions:
       widget
 - [ ] Confession submission form: full flow (compose → submit → confirmation)
       completable via keyboard only
+- [ ] Confession composer: every action (submit, preview toggle, formatting
+      controls, cancel/reset) is operable via keyboard alone with a visible
+      focus path
 - [ ] `ShareButtons` — each share action (copy link, share to X, etc.)
       triggerable via `Enter` / `Space`, not click-only handlers
 - [ ] Custom components (dropdowns, badge tooltips, reputation displays) use
@@ -80,6 +84,9 @@ Gate definitions:
 - [ ] Form validation errors are associated with their field via
       `aria-describedby`, and errors are announced (e.g. `aria-live` region)
       rather than only shown visually
+- [ ] Confession composer: every control has a correct accessible name/label,
+      and validation errors are associated with their fields via
+      `aria-describedby` / `aria-invalid` / `role="alert"` as appropriate
 - [ ] Headings use a logical hierarchy (`h1` → `h2` → `h3`) on both
       confession and profile pages — no skipped levels for styling reasons
 - [ ] Landmark regions (`<nav>`, `<main>`, `<header>`) present so screen
@@ -161,16 +168,6 @@ Manual (recorded per release):
 
 ## 8. Testing & Sign-off
 
-- [ ] Automated scan run (axe, Lighthouse, or equivalent) against confession
-      feed, confession detail, and profile pages — zero critical/serious
-      issues outstanding
-- [ ] Manual keyboard-only pass completed on all target surfaces above
-- [ ] Manual screen reader pass (VoiceOver or NVDA) completed on confession
-      submission flow and profile edit flow at minimum
-- [ ] Known issues logged with owner and severity if not fixed before this
-      review cycle
-- [ ] Re-test scheduled for next review cycle if any items are deferred
+- [ ] Automated scan run (axe, Lighthouse, or equivalent) against co
 
-**Decision:** ☐ Meets bar ☐ Meets bar with deferred items (list below) ☐ Does not meet bar
-
-_Deferred items / owners:_
+/* … truncated 595 chars — edit only what you need near the top … */
