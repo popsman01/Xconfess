@@ -3,15 +3,43 @@
 Scope: track accessibility issues on the most visible confession and profile
 pages. Covers keyboard navigation, labeling, contrast, and focus order.
 
-Target surfaces (adjust list as pages are confirmed):
+## Conformance target
 
-- Confession feed / list view
-- Confession detail / single confession view
-- Confession creation / submission form
-- `ShareButtons` component (confession sharing)
-- Profile view (own profile)
-- Profile view (other user's profile, if public)
-- Profile edit form
+Release-level target: **WCAG 2.2 Level AA** on all critical routes listed in
+the matrix below. A release is blocked until every critical route passes the
+automated gates and the manual checks recorded here. Non-critical routes are
+tracked but do not block release.
+
+## Route / component matrix
+
+Each critical route is checked against every gate. `A` = automated (CI),
+`M` = manual. A route is release-ready only when all gates pass.
+
+| Route / component | Keyboard | Focus | Semantics | Contrast | Motion | AT behavior |
+| --- | --- | --- | --- | --- | --- | --- |
+| Confession feed / list view | A+M | A+M | A | A | A | M |
+| Confession detail / single view | A+M | A+M | A | A | A | M |
+| Confession creation / submission form | A+M | A+M | A | A | A | M |
+| `ShareButtons` component | A+M | A+M | A | A | A | M |
+| Profile view (own) | A+M | A+M | A | A | A | M |
+| Profile view (other user, if public) | A+M | A+M | A | A | A | M |
+| Profile edit form | A+M | A+M | A | A | A | M |
+
+Gate definitions:
+
+- **Keyboard** — every interactive element reachable and operable via
+  `Tab`/`Shift+Tab`/`Enter`/`Space`; no keyboard traps.
+- **Focus** — visible focus indicator (≥3:1), logical order, focus moved into
+  modals and restored on close, focus not lost after async actions.
+- **Semantics** — programmatic labels, logical heading hierarchy, landmark
+  regions, `aria-describedby` on validation errors, `aria-live` for async
+  updates.
+- **Contrast** — body text ≥4.5:1, large text ≥3:1, UI/focus indicators
+  ≥3:1, non-color differentiators for color-coded badges.
+- **Motion** — respects `prefers-reduced-motion`; no non-essential animation
+  that cannot be disabled; no content that flashes more than 3 times/second.
+- **AT behavior** — screen reader (VoiceOver/NVDA) announces names, roles,
+  states, and dynamic updates correctly on the route.
 
 ---
 
@@ -95,7 +123,43 @@ Target surfaces (adjust list as pages are confirmed):
 - [ ] Profile edit form: focus moves to the first invalid field on failed
       validation submit
 
-## 5. Testing & Sign-off
+## 5. Motion & Animation
+
+- [ ] Non-essential animation (transitions, spinners, feed entry effects)
+      is disabled or reduced under `prefers-reduced-motion: reduce`
+- [ ] No content flashes more than three times per second (WCAG 2.2 §2.3.1)
+- [ ] Auto-updating content (live feed, reconnect banner) can be paused,
+      stopped, or hidden (WCAG 2.2 §2.2.2)
+- [ ] Motion is never the only means of conveying state or feedback
+
+## 6. Automated & Manual Checks
+
+Automated (deterministic, run in CI):
+
+- [ ] `npm run frontend:lint` — includes `eslint-plugin-jsx-a11y` rules
+- [ ] `npm run frontend:test` — component tests assert roles, labels, and
+      `aria-*` contracts for the matrix routes
+- [ ] `npm run frontend:test:e2e` — axe-core scan per critical route; any
+      critical/serious violation fails the run
+
+Manual (recorded per release):
+
+- [ ] Keyboard-only pass completed on all matrix routes
+- [ ] Screen reader pass (VoiceOver or NVDA) on confession submission flow
+      and profile edit flow at minimum
+- [ ] Contrast spot-check in light and dark themes on feed and detail states
+- [ ] Reduced-motion pass with OS setting enabled
+
+## 7. CI Regression Gate
+
+- [ ] Automated axe scan is wired into `frontend:test:e2e` and fails the
+      build on any new critical/serious violation on a critical route
+- [ ] Component a11y assertions in `frontend:test` fail on missing labels,
+      roles, or `aria-*` contracts
+- [ ] A failing gate blocks merge; waivers require an owner and expiry noted
+      in the deferred-items list below
+
+## 8. Testing & Sign-off
 
 - [ ] Automated scan run (axe, Lighthouse, or equivalent) against confession
       feed, confession detail, and profile pages — zero critical/serious
